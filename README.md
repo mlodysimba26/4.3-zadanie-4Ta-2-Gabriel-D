@@ -71,3 +71,78 @@ Poniżej znajduje się pięć zdań przepisanych na precyzyjne kryteria akceptac
   Zdanie zakłada idealny scenariusz powtórnego uruchomienia, pomijając stany brzegowe:
   - *Decyzja:* Jak program ma się zachować przy pierwszym uruchomieniu, gdy plik magazynu jeszcze w ogóle nie istnieje na dysku (czy utworzyć pusty plik natychmiast, czy dopiero przy pierwszym zapisie); oraz jak ma zareagować, jeśli plik magazynu istnieje, lecz jego zawartość została uszkodzona lub sformatowana niezgodnie ze składnią?
   - *Przeniesienie do specyfikacji:* Decyzje dotyczące tolerancji błędów składni pliku i inicjalizacji magazynu przeniesiono do sekcji **„Do ustalenia”** w `specs/001-notatnik/spec.md`.
+
+---
+
+## 2. Rozsortowanie promptu z pokazu do czterech plików (Warunek 4)
+
+Poniżej znajduje się analiza dziesięciu linii demonstracyjnego promptu minutnika Pomodoro, rozdzielonych do właściwych dokumentów architektury Spec-Driven Development:
+
+### Treść analizowanego promptu z pokazu:
+1. `Stwórz aplikację webową minutnika do techniki Pomodoro.`
+2. `Minutnik powinien domyślnie odliczać 25 minut pracy oraz 5 minut krótkiej przerwy.`
+3. `Po każdych 4 ukończonych cyklach pracy aplikacja ma przełączać się na długą przerwę trwającą 15 minut.`
+4. `Interfejs powinien zawierać duży wyświetlacz cyfrowy czasu w formacie MM:SS, etykietę aktualnego stanu oraz wskaźnik ukończonych cykli (np. 4 kropki).`
+5. `Dodaj panel sterowania z trzema przyciskami: Start, Pauza i Reset.`
+6. `Napisz całość w jednym pliku index.html ze stylami CSS w sekcji <style> i logiką JavaScript w sekcji <script>.`
+7. `Użyj czystego języka JavaScript (Vanilla JS), bez żadnych zewnętrznych bibliotek, bundlerów czy frameworków.`
+8. `Zadbaj o nowoczesny, minimalistyczny wygląd CSS z płynnymi przejściami kolorów tła w zależności od trybu pracy.`
+9. `Przycisk Start ma uruchamiać odliczanie sekunda po sekundzie, Pauza wstrzymywać odliczanie, a Reset przywracać pełny czas bieżącego trybu.`
+10. `Gdy zegar osiągnie 00:00, aplikacja ma bezbłędnie zainkrementować licznik cykli i samoczynnie przejść do kolejnego właściwego interwału.`
+
+---
+
+### Przyporządkowanie do czterech plików SDD:
+
+#### A. Konstytucja (`konstytucja.md` / inwarianty architektoniczne i technologiczne)
+*Definiuje nienaruszalne reguły i ograniczenia technologiczne całego ekosystemu, które muszą pozostać prawdziwe w każdej wersji programu.*
+- **Linia 7:** `Użyj czystego języka JavaScript (Vanilla JS), bez żadnych zewnętrznych bibliotek, bundlerów czy frameworków.`  
+  *Uzasadnienie:* Jest to twardy inwariant technologiczny (zerowa zależność od zewnętrznego ekosystemu npm, brak etapu kompilacji i bundlerów).
+
+---
+
+#### B. Specyfikacja (`spec.md` / wymagania funkcjonalne, interfejs i kryteria akceptacji)
+*Definiuje to, CO ma powstać z punktu widzenia użytkownika, stany kontrolek oraz reguły zachowania systemu.*
+- **Linia 2:** `Minutnik powinien domyślnie odliczać 25 minut pracy oraz 5 minut krótkiej przerwy.`  
+  *Uzasadnienie:* Wymaganie funkcjonalne określające bazowe parametry czasowe trybów minutnika.
+- **Linia 3:** `Po każdych 4 ukończonych cyklach pracy aplikacja ma przełączać się na długą przerwę trwającą 15 minut.`  
+  *Uzasadnienie:* Logika automatu stanów aplikacji (przejście po 4 powtórzeniach w stan długiego odpoczynku).
+- **Linia 4:** `Interfejs powinien zawierać duży wyświetlacz cyfrowy czasu w formacie MM:SS, etykietę aktualnego stanu oraz wskaźnik ukończonych cykli (np. 4 kropki).`  
+  *Uzasadnienie:* Opis wymaganych elementów wizualnych interfejsu graficznego użytkownika.
+- **Linia 5:** `Dodaj panel sterowania z trzema przyciskami: Start, Pauza i Reset.`  
+  *Uzasadnienie:* Zestaw kontrolek wejściowych służących do interakcji.
+- **Linia 8:** `Zadbaj o nowoczesny, minimalistyczny wygląd CSS z płynnymi przejściami kolorów tła w zależności od trybu pracy.`  
+  *Uzasadnienie:* Wymaganie niefunkcjonalne dotyczące stylistyki wizualnej i dynamiki interfejsu.
+- **Linia 9:** `Przycisk Start ma uruchamiać odliczanie sekunda po sekundzie, Pauza wstrzymywać odliczanie, a Reset przywracać pełny czas bieżącego trybu.`  
+  *Uzasadnienie:* Kryterium akceptacji opisujące precyzyjną reakcję kontrolek na zdarzenia kliknięcia.
+- **Linia 10:** `Gdy zegar osiągnie 00:00, aplikacja ma bezbłędnie zainkrementować licznik cykli i samoczynnie przejść do kolejnego właściwego interwału.`  
+  *Uzasadnienie:* Kryterium akceptacji automatycznej zmiany stanu i inkrementacji licznika po zakończeniu odliczania.
+
+---
+
+#### C. Plan (`plan.md` / struktura techniczna, architektura plików i implementacja)
+*Definiuje to, JAK system ma zostać fizycznie zbudowany i zorganizowany w plikach źródłowych.*
+- **Linia 6:** `Napisz całość w jednym pliku index.html ze stylami CSS w sekcji <style> i logiką JavaScript w sekcji <script>.`  
+  *Uzasadnienie:* Jest to wyciek implementacyjny narzucający fizyczny podział i strukturę plików w repozytorium. W czystej specyfikacji nie ma miejsca na nazwy plików z kodem; decyzja o strukturze monolitycznego pliku `index.html` należy wyłącznie do planu technicznego.
+
+---
+
+#### D. Zadania (`tasks.md` / jednostkowe kroki wykonawcze dla agenta)
+*Zawiera zlecenia operacyjne i kroki wdrożeniowe prowadzące do zrealizowania założeń planu.*
+- **Linia 1:** `Stwórz aplikację webową minutnika do techniki Pomodoro.`  
+  *Uzasadnienie:* Jest to nadrzędne polecenie wykonawcze / zadanie początkowe dla agenta, definiujące cel pierwszego etapu prac.
+
+---
+
+### Analiza brakującego pliku i kosztu w DECISIONS.md trzech agentów
+
+> **Prompt z pokazu nie posiadał wcale formalnego pliku specyfikacji (`spec.md` z precyzyjnie określonymi przypadkami brzegowymi, sekcjami „czego nie robi” oraz „do ustalenia”), co kosztowało to, że każdy z trzech niezależnych agentów w swoich plikach `DECISIONS.md` musiał samodzielnie podejmować arbitralne i wzajemnie sprzeczne decyzje dotyczące kluczowej ergonomii programu (takich jak to, czy przycisk Reset w trakcie przerwy zeruje licznik cykli, czy kolejna sesja pracy po przerwie startuje samoczynnie bez kliknięcia użytkownika, oraz czy stan odliczania jest zapisywany w pamięci trwałej), doprowadzając do powstania trzech zupełnie niespójnych, nieprzewidywalnych wersji aplikacji.**
+
+---
+
+## 3. Podsumowanie spełnienia warunków zadania w repozytorium
+
+1. **Warunek 1:** Plik `specs/001-notatnik/spec.md` posiada sześć wymaganych części (*Cel*, *Dla kogo*, *Co robi*, *Czego nie robi*, *Kryteria akceptacji*, *Do ustalenia*), format z Budowy 2, a każde kryterium ma sytuację, wynik i sposób sprawdzenia. Wszystkie nazwy plików z kodem zostały przeniesione do `specs/001-notatnik/plan.md`.
+2. **Warunek 2:** Historia Git dokumentuje dwa commity dotyczące specyfikacji: pierwszy z wersją autorską, drugi po niezależnym przeglądzie przeprowadzonym przez agenta w świeżej sesji (raport zapisany w `specs/001-notatnik/przeglad.md`).
+3. **Warunek 3:** W `README.md` znajduje się 5 zdań przepisanych na formułę „Kiedy …, to …” wraz ze „Sprawdzenie: …”, ze szczegółową analizą decyzji i ich przeniesieniem do „Do ustalenia” w specyfikacji.
+4. **Warunek 4:** W `README.md` rozsortowano 10 linii promptu z pokazu do czterech dokumentów (Konstytucja, Specyfikacja, Plan, Zadania) wraz z analizą braku pliku i skutków w `DECISIONS.md` trzech agentów.
