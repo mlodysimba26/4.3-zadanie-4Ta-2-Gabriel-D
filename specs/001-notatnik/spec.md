@@ -19,19 +19,20 @@ Stworzenie minimalistycznej, w pełni lokalnej aplikacji biurkowej do natychmias
 
 ## 3. Co robi
 
-- Prezentuje prosty, jednoekranowy interfejs graficzny w języku polskim.
-- Oferuje jednoliniowe pole tekstowe z tekstem zastępczym na wpisanie tytułu notatki.
-- Oferuje wieloliniowe pole tekstowe z tekstem zastępczym na wpisanie treści notatki.
+- Prezentuje prosty, jednoekranowy interfejs graficzny zredagowany w całości w języku polskim.
+- Wykorzystuje plik magazynu danych w formacie Markdown o domyślnej nazwie `notatki.md`, zlokalizowany w bieżącym katalogu roboczym programu.
+- Oferuje jednoliniowe pole tekstowe z tekstem zastępczym („Tytuł notatki...”) na wpisanie tytułu notatki.
+- Oferuje wieloliniowe pole tekstowe z tekstem zastępczym („Treść notatki...”) na wpisanie treści notatki.
 - Udostępnia przycisk „Zapisz notatkę”, który utrwala notatkę w pliku magazynu danych na dysku.
-- Blokuje przycisk zapisu (stan nieaktywny), gdy pole tytułu jest puste lub zawiera wyłącznie białe znaki.
+- Blokuje przycisk zapisu (stan wizualnie i funkcjonalnie nieaktywny), dopóki pole tytułu pozostaje puste lub zawiera wyłącznie białe znaki.
 - Formatuje każdy wpis w standardzie Markdown z nagłówkiem poziomu drugiego: `## YYYY-MM-DD HH:mm — Tytuł`, po którym następuje pusty wiersz, treść notatki i kolejny pusty wiersz oddzielający wpisy.
 - Zapisuje wpisy w porządku odwróconej chronologii — każda nowo utworzona notatka wstawiana jest na samym początku pliku magazynu, powyżej starszych notatek.
-- Zapisuje i odczytuje wszystkie pliki w standardzie kodowania UTF-8, bezbłędnie zachowując polskie znaki diakrytyczne (`ąćęłńóśźżĄĆĘŁŃÓŚŹŻ`).
-- Natychmiast po udanym zapisie czyści pola formularza oraz odświeża listę notatek w oknie aplikacji, umieszczając nowy wpis na samej górze.
+- Zapisuje i odczytuje wszystkie dane w standardzie kodowania UTF-8, bezbłędnie zachowując polskie znaki diakrytyczne (`ąćęłńóśźżĄĆĘŁŃÓŚŹŻ`).
+- Natychmiast po udanym zapisie czyści pola formularza, wyświetla potwierdzenie na pasku statusu oraz odświeża listę notatek w oknie aplikacji, umieszczając nowy wpis na samej górze.
 - Wyświetla listę wszystkich dotychczas zapisanych notatek od najnowszej do najstarszej z widocznym tytułem i znacznikiem czasu.
-- Po wybraniu elementu z listy prezentuje pełną treść notatki w widoku podglądu.
-- Przy starcie programu automatycznie wczytuje istniejący plik magazynu i prezentuje listę wszystkich zapisanych dotąd notatek.
-- W przypadku błędu wejścia/wyjścia (np. plik zablokowany, brak uprawnień) nie ulega awarii procesu, lecz wyświetla zrozumiały komunikat o błędzie po polsku na pasku statusu i zachowuje wpisany tekst w polach formularza.
+- Po wybraniu elementu z listy prezentuje pełną treść notatki w widoku podglądu. Bezpośrednio po uruchomieniu aplikacji domyślnie zaznaczana i prezentowana w podglądzie jest najnowsza notatka (jeśli lista nie jest pusta).
+- Przy starcie programu automatycznie wczytuje istniejący plik magazynu i prezentuje listę wszystkich zapisanych dotąd notatek w czasie krótszym niż dwie sekundy.
+- W przypadku błędu wejścia/wyjścia (np. plik zablokowany, brak uprawnień zapisu) nie ulega awarii procesu, lecz wyświetla zrozumiały komunikat o błędzie po polsku na pasku statusu i zachowuje wpisany tekst w polach formularza.
 
 ---
 
@@ -39,10 +40,10 @@ Stworzenie minimalistycznej, w pełni lokalnej aplikacji biurkowej do natychmias
 
 - Nie łączy się z internetem, nie odpytuje zewnętrznych API ani nie wysyła telemetrii (zgodnie z zasadą 1 Konstytucji).
 - Nie wymaga ani nie posiada systemu kont, logowania, profili, haseł ani ról (zgodnie z zasadą 3 Konstytucji).
-- Nie umożliwia edycji ani usuwania pojedynczych historycznych notatek z poziomu interfejsu graficznego w tej wersji (ewentualne korekty użytkownik wykonuje bezpośrednio w otwartym pliku Markdown).
+- Nie umożliwia edycji ani usuwania pojedynczych historycznych notatek z poziomu interfejsu graficznego w tej wersji programu (zgodnie z decyzją o cięciu zakresu; ewentualne korekty użytkownik wykonuje bezpośrednio w pliku Markdown).
 - Nie stosuje formatowania bogatego (WYSIWYG), kolorowania składni, osadzania tabel ani dołączania plików graficznych.
-- Nie zawiera wyszukiwania pełnotekstowego, tagowania ani hierarchicznych folderów (decyzja o cięciu zakresu ADR 0001).
-- Nie szyfruje pliku magazynu danych — zawartość pozostaje otwartym, czytelnym tekstem (zgodnie z zasadą 2 Konstytucji).
+- Nie zawiera wyszukiwania pełnotekstowego, tagowania ani hierarchicznych folderów (decyzja o cięciu zakresu dla zachowania prostoty i szybkości).
+- Nie szyfruje pliku magazynu danych — zawartość pozostaje otwartym, bezpośrednio czytelnym tekstem (zgodnie z zasadą 2 Konstytucji).
 - Nie integruje się z usługami chmurowymi (Dropbox, Google Drive, OneDrive).
 
 ---
@@ -51,13 +52,13 @@ Stworzenie minimalistycznej, w pełni lokalnej aplikacji biurkowej do natychmias
 
 ### Kryterium 1: Poprawny zapis nowej notatki z formatem daty i tytułu
 - **Sytuacja:** Użytkownik wpisuje tytuł „Plan na dzisiaj”, treść „1. Napisać specyfikację\n2. Zrobić commit” i klika przycisk „Zapisz notatkę”.
-- **Wynik:** Nowa notatka zostaje zapisana w pliku magazynu z nagłówkiem `## YYYY-MM-DD HH:mm — Plan na dzisiaj` (gdzie data i godzina odpowiadają chwili zapisu), pustą linią, zadaną treścią i kolejną pustą linią. Pola formularza w oknie zostają wyczyszczone, a lista notatek natychmiast pokazuje nowy wpis na samej górze.
+- **Wynik:** Nowa notatka zostaje zapisana w pliku magazynu z nagłówkiem `## YYYY-MM-DD HH:mm — Plan na dzisiaj` (gdzie data i godzina odpowiadają chwili zapisu), pustą linią, zadaną treścią i kolejną pustą linią. Pola formularza w oknie zostają wyczyszczone, na pasku statusu pojawia się potwierdzenie zapisu, a lista notatek natychmiast pokazuje nowy wpis na samej górze.
 - **Sposób sprawdzenia:** Uruchom program, wprowadź powyższy tytuł i treść, naciśnij „Zapisz notatkę”. Zweryfikuj, czy pola edycyjne stały się puste, a pierwszy wiersz listy w programie pokazuje bieżący czas i tytuł. Otwórz plik magazynu w edytorze tekstowym i sprawdź obecność nagłówka `## ` z dokładną datą i separatorem `—`.
 
 ### Kryterium 2: Blokada zapisu przy pustym tytule
 - **Sytuacja:** Pole tytułu notatki jest puste lub zawiera wyłącznie białe znaki (spacje, tabulacje).
-- **Wynik:** Przycisk „Zapisz notatkę” pozostaje nieaktywny (`IsEnabled = false`), kliknięcie w niego nie wywołuje żadnego efektu, a żaden wpis nie zostaje dodany do magazynu ani listy.
-- **Sposób sprawdzenia:** Uruchom aplikację. Sprawdź stan przycisku zapisu bez wpisywania tekstu. Następnie wprowadź do pola tytułu trzy spacje i sprawdź, czy przycisk nadal pozostaje nieaktywny. Wprowadź dowolną treść w pole treści przy pustym tytule — upewnij się, że przycisk wciąż jest zablokowany.
+- **Wynik:** Przycisk „Zapisz notatkę” pozostaje zablokowany i wyłączony dla interakcji użytkownika, kliknięcie w niego nie wywołuje żadnego efektu, a żaden wpis nie zostaje dodany do magazynu ani listy.
+- **Sposób sprawdzenia:** Uruchom aplikację. Sprawdź stan przycisku zapisu bez wpisywania tekstu (brak reakcji na kliknięcie). Następnie wprowadź do pola tytułu trzy spacje i sprawdź, czy przycisk nadal pozostaje nieaktywny. Wprowadź dowolną treść w pole treści przy pustym tytule — upewnij się, że przycisk wciąż jest zablokowany.
 
 ### Kryterium 3: Odwrócona chronologia zapisów (najnowszy wpis na początku)
 - **Sytuacja:** W magazynie danych istnieją już wcześniej utrwalone notatki, a użytkownik dodaje kolejny wpis.
@@ -75,16 +76,18 @@ Stworzenie minimalistycznej, w pełni lokalnej aplikacji biurkowej do natychmias
 - **Sposób sprawdzenia:** Zapisz trzy zróżnicowane notatki w aplikacji. Zamknij proces programu. Uruchom program ponownie, mierząc czas do pełnej gotowości interfejsu (poniżej 2 sekund). Upewnij się, że lista zawiera dokładnie trzy elementy w prawidłowej kolejności od najnowszej do najstarszej.
 
 ### Kryterium 6: Bezpieczeństwo zapisu w przypadku awarii wejścia/wyjścia
-- **Sytuacja:** Podczas próby zapisu notatki występuje błąd wejścia/wyjścia na dysku (np. plik magazynu ma nadany atrybut „tylko do odczytu” lub proces nie ma praw zapisu).
+- **Sytuacja:** Podczas próby zapisu notatki występuje błąd wejścia/wyjścia na dysku (np. plik magazynu ma zablokowane uprawnienia do zapisu lub atrybut tylko do odczytu).
 - **Wynik:** Aplikacja nie ulega awarii procesu (brak nagłego zamknięcia okna), na pasku stanu pojawia się czytelny komunikat błędu w języku polskim, a wprowadzony tekst w polach tytułu i treści NIE zostaje utracony, umożliwiając ponowienie próby po usunięciu blokady.
-- **Sposób sprawdzenia:** Wprowadź tytuł i treść notatki do programu. W wierszu poleceń nadaj plikowi magazynu atrybut tylko do odczytu (`attrib +r`). W aplikacji kliknij przycisk „Zapisz notatkę”. Sprawdź, czy program nadal działa, czy w polu statusu pojawił się komunikat o błędzie zapisu oraz czy wpisany tekst pozostał w polach formularza. Usuń atrybut (`attrib -r`) i kliknij „Zapisz” ponownie — notatka powinna zostać pomyślnie zapisana.
+- **Sposób sprawdzenia:** Wprowadź tytuł i treść notatki do programu. W systemie operacyjnym odbierz procesowi prawa zapisu do pliku magazynu (np. nadając atrybut tylko do odczytu). W aplikacji kliknij przycisk „Zapisz notatkę”. Sprawdź, czy program nadal działa, czy w polu statusu pojawił się komunikat o błędzie zapisu oraz czy wpisany tekst pozostał w polach formularza. Przywróć uprawnienia do zapisu i kliknij „Zapisz” ponownie — notatka powinna zostać pomyślnie zapisana.
 
 ---
 
 ## 6. Do ustalenia
 
-- **Zewnętrzne modyfikacje pliku magazynu:** Czy jeśli użytkownik zmodyfikuje zawartość pliku magazynu w zewnętrznym programie (np. Notatniku) w trakcie działania aplikacji, program powinien automatycznie wykrywać zmiany i odświeżać listę, czy odczyt ma następować jedynie przy starcie i własnych zapisach?
-- **Zapis notatki z pustą treścią:** Czy dozwolony jest zapis notatki, która posiada poprawny tytuł, lecz pole treści jest całkowicie puste (notatka jednolinijkowa), czy oba pola muszą być wypełnione?
-- **Odporność parsera na znaczniki Markdown w treści:** W jaki sposób program powinien zabezpieczać treść notatki, jeśli użytkownik wpisze w niej wiersz zaczynający się od `## ` (nagłówek poziomu drugiego w Markdown), aby parser nie zinterpretował go jako początku nowego wpisu?
-- **Zabezpieczenie przed uszkodzeniem pliku przy nagłej awarii (zapis atomowy):** Czy zapis do pliku magazynu powinien odbywać się poprzez plik tymczasowy z atomową zamianą (`File.Replace`), aby wyeliminować ryzyko utraty danych w przypadku nagłego zaniku zasilania w trakcie operacji zapisu?
-- **Zachowanie przy braku lub uszkodzeniu pliku magazynu:** Czy przy pierwszym uruchomieniu, gdy plik magazynu jeszcze nie istnieje, program powinien utworzyć pusty plik od razu, czy dopiero przy pierwszym zapisie; oraz jak program powinien zareagować na uszkodzoną strukturę pliku (np. czy tworzyć automatyczną kopię `.bak`)?
+- **Zewnętrzne modyfikacje pliku magazynu w trakcie działania programu:** Czy jeśli użytkownik zmodyfikuje zawartość pliku magazynu w zewnętrznym programie podczas gdy aplikacja jest uruchomiona, program powinien automatycznie wykrywać zmiany i odświeżać listę, czy odczyt ma następować jedynie przy starcie i własnych zapisach?
+- **Zasady dopuszczalności notatki z pustą treścią:** Czy dozwolony jest zapis notatki, która posiada poprawny tytuł, lecz pole treści jest całkowicie puste (notatka jednolinijkowa), czy oba pola formularza muszą być wypełnione?
+- **Odporność parsera na znaczniki nagłówków Markdown w treści:** W jaki sposób program powinien zabezpieczać treść notatki, jeśli użytkownik wpisze w niej wiersz zaczynający się od `## ` (nagłówek poziomu drugiego w Markdown), aby parser nie zinterpretował go jako początku nowego wpisu?
+- **Zabezpieczenie przed uszkodzeniem pliku przy nagłej awarii (zapis atomowy):** W jaki sposób zrealizować zapis do pliku magazynu (poprzez plik tymczasowy z atomową zamianą w systemie plików), aby spełnić Zasadę 6 Konstytucji i wyeliminować ryzyko utraty danych w przypadku nagłego zaniku zasilania w trakcie operacji zapisu?
+- **Reakcja na brak lub uszkodzenie pliku magazynu:** Czy przy pierwszym uruchomieniu, gdy plik magazynu jeszcze nie istnieje, program powinien utworzyć pusty plik od razu, czy dopiero przy pierwszym zapisie; oraz jak program powinien zareagować na uszkodzoną strukturę pliku (np. czy tworzyć automatyczną kopię zapasową pliku)?
+- **Obsługa kolizji znacznika czasu w tej samej minucie:** Czy format czasu `YYYY-MM-DD HH:mm` powinien zostać rozszerzony o sekundy (`HH:mm:ss`) lub unikalny sufiks, aby zapobiec powstawaniu identycznych nagłówków przy szybkim dodaniu dwóch notatek?
+- **Tolerancja wariantów separatora tytułu:** Czy parser powinien akceptować zarówno długą pauzę `—` (em-dash), jak i zwykły myślnik `-` (dywiz) oraz półpauzę `–`, na wypadek ręcznej edycji pliku przez użytkownika w prostym edytorze tekstu?
